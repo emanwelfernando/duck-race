@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>🐤 Duck Race Simulator</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <h1>🐤 Duck Race Simulator</h1>
+  
+  <div id="bg"></div>
+  
+  <button id="openSettingsBtn" class="btn-settings" title="Open Setup">
+    ⚙️ Settings
+  </button>
+
+  <!-- Setup Wizard Form -->
+  <div id="setupDrawer" class="drawer closed">
+    <form id="setupForm" class="setup-form">
+      <!-- Step indicator -->
+      <div class="wizard-steps">
+        <div class="step active" data-step="1">1. Settings</div>
+        <div class="step"        data-step="2">2. Avatars</div>
+      </div>
+
+      <!-- Step 1: Race settings -->
+      <div class="wizard-step" data-step="1">
+        <div class="card">
+          <label>Duck Names (comma-separated):
+            <input type="text" id="namesInput"
+                   placeholder="e.g. Daffy,Howard,Quacky" required>
+          </label>
+        </div>
+        <div class="card">
+          <label>Race Duration (seconds):
+            <input type="number" id="durationInput"
+                   value="5" min="0.5" step="0.1" required>
+          </label>
+        </div>
+        <div class="card">
+          <label>
+            Number of Winners:
+            <input type="number" id="winnersCountInput"
+                  value="1" min="1" required>
+          </label>
+        </div>
+        <div class="card">
+          <label>Target Score:
+            <input type="number" id="targetInput"
+                   value="5" min="1" required>
+          </label>
+        </div>
+        <div class="card">
+        <label>
+          Randomness (0 = deterministic, 1 = totally random):
+          <input
+            type="range"
+            id="randomnessInput"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.2"    <!-- default 20% variability -->
+          />
+          <span id="randomnessValue">0.20</span>
+        </label>
+      </div>
+      </div>
+
+      <!-- Step 2: Avatar uploads -->
+      <div class="wizard-step hidden" data-step="2">
+        <div class="card grid-avatars" id="avatarGrid">
+          <!-- template: will be cloned per duck -->
+          <div class="avatar-card">
+            <div class="avatar-name">Name</div>
+            <img class="duck-avatar-preview"
+                 src="./assets/duck.png"
+                 alt="Duck avatar">
+            <label class="upload-btn">
+              Upload avatar
+                <input
+                  type="file"
+                  class="avatarInput"
+                  accept="image/*,.webp"
+                  hidden
+                >
+            </label>
+            <button type="button" class="reset-avatar">
+              Restore default
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wizard navigation -->
+      <div class="form-actions wizard-nav">
+        <!-- always-visible “Close” drawer toggle: -->
+        <button type="button" class="drawerToggle btn-primary">Close</button>
+
+        <!-- Step-specific nav: Back & Next/Start: -->
+        <button type="button" id="btnBack" class="btn-primary hidden">← Back</button>
+        <button type="button" id="btnNext" class="btn-primary">Next →</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Race UI (hidden until setupSubmit) -->
+  <div id="raceContainer" hidden>
+    <div id="track"></div>
+    <div id="sidebar">
+      <div id="roundCounter" class="round-counter">Round 0</div>
+      <div id="sidebarTimer" class="timer-ui">0.00s</div>
+      <h2>Scoreboard</h2>
+      <div id="scoreboard-wrapper">
+        <table id="scoreboard">
+          <thead>
+            <tr><th>Name</th><th>Score</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="controls">
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn" style="display:block;">New Simulation</button>
+      </div>
+      <div id="finalMessage"></div>  
+    </div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Winner banner overlay -->
+  <div id="winnerBanner" class="hidden">
+    <div class="banner-content">
+      <h2>Winners</h2>
+      <ul id="winnerList" class="winner-list"></ul>
+      <button id="closeBanner" class="btn-primary">Continue</button>
+    </div>
+  </div>
+
+  <!-- Audio assets -->
+  <audio id="amb-water"   src="assets/sounds/water-loop.mp3" preload="auto" loop></audio>
+  <audio id="snd-whistle" src="assets/sounds/whistle.mp3"    preload="auto"></audio>
+  <audio id="snd-ping"    src="assets/sounds/ping.mp3"       preload="auto"></audio>
+  <audio id="snd-quack"   src="assets/sounds/quack.mp3"      preload="auto"></audio>
+  <audio id="snd-cheer"   src="assets/sounds/cheer.mp3"      preload="auto"></audio>
+  <audio id="snd-click"   src="assets/sounds/click.mp3"      preload="auto"></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
